@@ -19,13 +19,15 @@ rule token = parse
 | "float"       { FLOAT }
 | "bool"        { BOOL }
 (* Keywords *)
-| "aparecium" { PRINT }
-| '!' 		  { EOL }
+| '(' 		{ LPAREN }
+| ')'		{ RPAREN } 
+| '!' 		{ EOL }
+| ',' 		{ COMMA }
 (* Literals and identifiers *)
-| digit+ as int_lit { INT_LITERAL(int_of_string int_lit)}
-| digit+ '.' digit* as float_lit { FLOAT_LITERAL(float_of_string float_lit) }
-| '\'' (digit | letter | '_') '\'' as char_lit { CHAR_LITERAL(int_of_string char_lit) }
-| '"' (('\\' '"'| [^'"'])* as str) '"' { STRING_LITERAL(unescape str) } 
-| ("true" | "false") as bool_lit { BOOL_LITERAL(bool_of_string bool_lit)}
-| letter (letter | digit | '_')* as lxm { ID(lxm) }
-| eof		{ EOF }
+| digit+ as int_lit 				{ INT_LITERAL(int_of_string int_lit)}
+| digit+ '.' digit* as float_lit 		{ FLOAT_LITERAL(float_of_string float_lit) }
+| '\'' (digit | letter | '_') '\'' as char_lit 	{ CHAR_LITERAL(int_of_string char_lit) }
+| '"' (('\\' '"'| [^'"'])* as str) '"' 		{ STRING_LITERAL(unescape str) } 
+| ("true" | "false") as bool_lit 		{ BOOL_LITERAL(bool_of_string bool_lit)}
+| letter (letter | digit | '_')* as lxm 	{ ID(lxm) }
+| eof						{ EOF }

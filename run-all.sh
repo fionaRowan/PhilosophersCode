@@ -1,7 +1,7 @@
 #!/bin/sh
 
 GCC="gcc"
-TAIL="./tail"
+PC="./philosophers_code"
 ulimit -t 30 
 error=0
 globalerror=0
@@ -38,7 +38,7 @@ CompileFail(){
 SignalError(){
 	echo "$1 $2 FAILED"
 	error=1
-	globalerror=1
+	globalerror=$((globalerror+1)) 
 	echo "  $1"
 }
 
@@ -68,24 +68,24 @@ RunFail(){
 
 FileIterator(){
 basename=`echo $1 | sed 's/.*\\///
-                             s/.tail//'`
+                             s/.hp//'`
 	echo ""
 	echo "########testing $basename"
 	if [ $2 -eq 1 ] ; then 
-		$TAIL < $1 > tests/$basename.c
-		Compile $GCC tests/$basename tests/$basename.c 2>> globallog 
-		Run tests/$basename $basename 2>> globallog 
+		$PC < $1 > tests/$basename.c
+		Compile $GCC tests/$basename.out tests/$basename.c 2>> globallog 
+		Run tests/$basename.out $basename 2>> globallog 
 	fi
 	
 	if [ $2 -eq 0 ] ; then 
-		$TAIL < $1 > tests/$basename.c
-		CompileFail $GCC tests/$basename tests/$basename.c 2>> globallog 
-		RunFail tests/$basename $basename 2>> globallog 
+		$PC < $1 > tests/$basename.c
+		CompileFail $GCC tests/$basename.out tests/$basename.c 2>> globallog 
+		RunFail tests/$basename.out $basename 2>> globallog 
 	fi	
 
 }
-failFiles="tests/fail-*.tail"
-testFiles="tests/test-*.tail"
+failFiles="tests/fail-*.hp"
+testFiles="tests/test-*.hp"
 for tFile in $testFiles
 do
 	FileIterator $tFile 1
