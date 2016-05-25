@@ -9,6 +9,7 @@ type expr =
 	| Id of string
 	| Call of string * expr list
 	| Binop of expr * op * expr
+	| Assign of string * expr
 	| Noexpr
 
 type program = Program of expr list 
@@ -31,6 +32,7 @@ let rec string_of_expr = function
 	| Bool_Lit(false) -> "false" 
 	| Binop(a, o, b) -> (string_of_expr a)^(string_of_op o)^(string_of_expr b)
 	| Id(s) -> s
+	| Assign(v, e) -> "int "^v^ " = " ^ string_of_expr e
 	| Call(f, el) -> (match f with 
 		"aparecium" -> 
 			"printf(\"%d\\n\", " ^ String.concat ", " (List.map string_of_expr el) ^")"

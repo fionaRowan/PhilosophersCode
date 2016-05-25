@@ -33,7 +33,7 @@ let translate program =
 	let exprs_string_list = string_of_expr_list (match program with 
 		Program(expressions) -> expressions) in 
 	
-	let exprs_string = String.concat "; " exprs_string_list in
+	let exprs_string = String.concat ";\n" exprs_string_list in
 	(*program string*)
 	let program_string = includes ^ main_str ^ exprs_string^";" ^ main_end
 

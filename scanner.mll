@@ -27,6 +27,7 @@ rule token = parse
 | "convello"	{ SUBTRACT }
 | "engorgio" 	{ MULTIPLY }
 | "reducio" 	{ DIVIDE }
+| "epoximise" 	{ ASSIGN }
 (* Literals and identifiers *)
 | digit+ as int_lit 				{ INT_LITERAL(int_of_string int_lit)}
 | digit+ '.' digit* as float_lit 		{ FLOAT_LITERAL(float_of_string float_lit) }

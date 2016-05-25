@@ -5,7 +5,7 @@ open Ast
 %}
 
 /*keywords*/
-%token ADD SUBTRACT MULTIPLY DIVIDE
+%token ADD SUBTRACT MULTIPLY DIVIDE ASSIGN
 
 /*data types, literals, id*/
 %token <int> INT_LITERAL
@@ -22,12 +22,15 @@ open Ast
 %token COMMA
 %token LPAREN RPAREN
 
+%right ASSIGN
+%left ADD SUBTRACT MULTIPLE DIVIDE
+
 %start program
 %type <Ast.program> program
 %%
 
 program:
-  exprs EOF		 	{ Program($1) }	
+	exprs EOF		 	{ Program($1) }	
 	
 exprs: 
 	/* nothing */ 		{ [] }
@@ -39,7 +42,9 @@ expr:
 	| expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
 	| expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
 	| expr DIVIDE expr 	{ Binop($1, Divide, $3) }
+	| ID			{ Id($1) }
 	| ID expr_opt		{ Call($1, $2) }
+	| ID ASSIGN expr 	{ Assign($1, $3) } 
 
 expr_opt:
 	{ [] }
