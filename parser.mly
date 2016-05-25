@@ -5,6 +5,7 @@ open Ast
 %}
 
 /*keywords*/
+%token ADD SUBTRACT MULTIPLY DIVIDE
 
 /*data types, literals, id*/
 %token <int> INT_LITERAL
@@ -34,6 +35,10 @@ exprs:
 
 expr: 
 	literal			{ $1 }	
+	| expr ADD expr 	{ Binop($1, Add, $3) }
+	| expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
+	| expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
+	| expr DIVIDE expr 	{ Binop($1, Divide, $3) }
 	| ID expr_opt		{ Call($1, $2) }
 
 expr_opt:
