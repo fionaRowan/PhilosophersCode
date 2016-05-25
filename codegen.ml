@@ -30,12 +30,17 @@ let translate program =
 		|*)
 	let rec string_of_expr_list expr_list = List.map string_of_expr expr_list in  
 	
-	let exprs_string_list = string_of_expr_list (match program with 
-		Program(expressions) -> expressions) in 
+	let matcher stmt = match stmt with 
+		| Expr(e) -> string_of_expr e in
+
+	let string_of_stmt_list stmt_list = List.map matcher stmt_list in  
+
+	let stmts_string_list = string_of_stmt_list (match program with 
+		| Program(stmts) -> stmts) in 
 	
-	let exprs_string = String.concat ";\n" exprs_string_list in
+	let stmts_string = String.concat ";\n" stmts_string_list in
 	(*program string*)
-	let program_string = includes ^ main_str ^ exprs_string^";" ^ main_end
+	let program_string = includes ^ main_str ^ stmts_string^";" ^ main_end
 
 in program_string
 
