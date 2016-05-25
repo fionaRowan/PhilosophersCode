@@ -12,7 +12,7 @@ let translate program =
 	let main_str = "int main(){ \n" in
 	let main_end = "\n}\n" in
 
-	
+	(*
 	let rec string_of_expr expression = match expression with
 		| Call(funcName, exprList) -> (match funcName with
 			|"aparecium" -> "printf(\"%d\\n\", "^string_of_actuals exprList^")"
@@ -24,13 +24,18 @@ let translate program =
 		| [s] -> string_of_expr s
 		| _ -> "555"
 	in 
+	*)
+
+(*	let rec string_of_expr expression = match expression with 
+		|*)
 	let rec string_of_expr_list expr_list = List.map string_of_expr expr_list in  
 	
-	let exprs_string_list = string_of_expr_list program in 
+	let exprs_string_list = string_of_expr_list (match program with 
+		Program(expressions) -> expressions) in 
 	
-	let exprs_string = String.concat " " exprs_string_list in
+	let exprs_string = String.concat "; " exprs_string_list in
 	(*program string*)
-	let program_string = includes ^ main_str ^ exprs_string ^ main_end
+	let program_string = includes ^ main_str ^ exprs_string^";" ^ main_end
 
 in program_string
 

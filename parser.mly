@@ -34,7 +34,7 @@ exprs:
 
 expr: 
 	literal			{ $1 }	
-	| ID LPAREN expr_opt RPAREN	{ Call($1, $3) }
+	| ID expr_opt		{ Call($1, $2) }
 
 expr_opt:
 	{ [] }

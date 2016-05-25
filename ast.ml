@@ -6,7 +6,6 @@ type expr =
 	| Char_Lit of int 
 	| String_Lit of string
 	| Bool_Lit of bool
-
 	| Id of string
 	| Call of string * expr list
 	| Noexpr
@@ -22,16 +21,20 @@ let rec string_of_expr = function
 	| Bool_Lit(true) -> "true"
 	| Bool_Lit(false) -> "false" 
 	| Id(s) -> s
-	| Call(f, el) ->
-		f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+	| Call(f, el) -> (match f with 
+		"aparecium" -> 
+			"printf(\"%d\\n\", " ^ String.concat ", " (List.map string_of_expr el) ^")"
+		| _ -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")")
 	| Noexpr -> ""
-
-
 
 (*
 let string_of_typ = function
 	Int -> "int" 
 	| Bool -> "bool"
 	| Void -> "void" *)
-let string_of_program exprs = 
-	String.concat "" (List.map string_of_expr exprs) ^ "\n" 
+(*let string_of_program expression = match expression with 
+	Program(expressn) -> (let result =
+	""^(string_of_expr expressn)^"" in result^"\n")*)
+let string_of_program exprs = match exprs with 
+	Program(expr_list) -> let result =  
+		String.concat "" (List.map string_of_expr expr_list) ^ "\n" in result
