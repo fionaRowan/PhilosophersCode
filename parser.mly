@@ -5,7 +5,7 @@ open Ast
 %}
 
 /*keywords*/
-%token ADD SUBTRACT MULTIPLY DIVIDE ASSIGN
+%token ADD SUBTRACT MULTIPLY DIVIDE ASSIGN REASSIGN
 %token NOT GREATER LESSER EQUALS AND OR TRUE FALSE 
 
 /*data types, literals, id*/
@@ -23,7 +23,7 @@ open Ast
 %token COMMA
 %token LPAREN RPAREN
 
-%right ASSIGN
+%right ASSIGN REASSIGN
 %left ADD SUBTRACT MULTIPLE DIVIDE
 %right NOT
 %left LESSER GREATER EQUALS
@@ -55,6 +55,7 @@ expr:
 	| expr DIVIDE expr 	{ Binop($1, Divide, $3) }
 	| ID			{ Id($1) }
 	| ID expr_opt		{ Call($1, $2) }
+	| ID REASSIGN expr	{ Reassign($1, $3) }
 	| ID ASSIGN expr 	{ Assign($1, $3) }
 	| expr AND expr 	{ Binop($1, And, $3) }
 	| expr OR expr 		{ Binop($1, Or, $3) } 

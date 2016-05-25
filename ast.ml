@@ -12,6 +12,7 @@ type expr =
 	| Binop of expr * op * expr
 	| Uniop of uop * expr
 	| Assign of string * expr
+	| Reassign of string * expr
 	| Expr of expr
 	| Noexpr
 
@@ -46,6 +47,7 @@ let rec string_of_expr = function
 	| Uniop(uo, a) -> (string_of_uop uo) ^ (string_of_expr a)
 	| Id(s) -> s
 	| Assign(v, e) -> "int "^v^ " = " ^ string_of_expr e
+	| Reassign(v, e) -> v^" = " ^string_of_expr e
 	| Call(f, el) -> (match f with 
 		"aparecium" -> 
 			"printf(\"%d\\n\", " ^ String.concat ", " (List.map string_of_expr el) ^")"

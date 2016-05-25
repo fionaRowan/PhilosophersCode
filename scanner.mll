@@ -28,6 +28,7 @@ rule token = parse
 | "engorgio" 	{ MULTIPLY }
 | "reducio" 	{ DIVIDE }
 | "epoximise" 	{ ASSIGN }
+| "repleo" 	{ REASSIGN }
 | "est" 	{ EQUALS }
 | "non" 	{ NOT }
 | "quam" 	{ GREATER }
