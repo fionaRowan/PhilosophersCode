@@ -41,7 +41,9 @@ rule token = parse
 | "falsum"	{ FALSE }
 | "si" 		{ IF }
 | "tunc" 	{ THEN }
-| "aliter" 	{ ELSE } 
+| "aliter" 	{ ELSE }
+| "finite" 	{ RETURN1 } 
+| "incantatem"	{ RETURN2 }
 (* Literals and identifiers *)
 | digit+ as int_lit 				{ INT_LITERAL(int_of_string int_lit)}
 | digit+ '.' digit* as float_lit 		{ FLOAT_LITERAL(float_of_string float_lit) }

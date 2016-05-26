@@ -8,6 +8,7 @@ open Ast
 %token ADD SUBTRACT MULTIPLY DIVIDE ASSIGN REASSIGN
 %token NOT GREATER LESSER EQUALS AND OR TRUE FALSE 
 %token IF THEN ELSE 
+%token RETURN1 RETURN2
 
 /*data types, literals, id*/
 %token <int> INT_LITERAL
@@ -49,6 +50,8 @@ stmt:
 	| LBRACE stmt_list RBRACE 		{ Block(List.rev $2) }
 	| IF expr THEN stmt %prec NOELSE 	{ If($2, $4, Block([])) }
 	| IF expr THEN stmt ELSE stmt 		{ If($2, $4, $6) }
+	| RETURN1 RETURN2 EOL 			{ Return(Noexpr) }
+	| RETURN1 RETURN2 expr EOL		{ Return($3) }
 	/*| fun_def				{ Fun_Def($1) }*/
 
 expr: 

@@ -19,7 +19,8 @@ type expr =
 type stmt = 
 	| Expr of expr
 	| Block of stmt list
-	| If of expr * stmt * stmt 
+	| If of expr * stmt * stmt
+	| Return of expr 
 
 type program = Program of stmt list 
 
@@ -61,6 +62,7 @@ let rec string_of_stmt = function
 	| If(e, s1, s2) -> 
 		"if("^(string_of_expr e)^")\n "^(string_of_stmt s1)^" else "^(string_of_stmt s2)
 	| Block(sl) -> "{ "^(String.concat " " (List.map string_of_stmt sl)) ^" }\n"
+	| Return(e) -> "return "^string_of_expr e ^";"
 
 let string_of_program stmts = match stmts with 
 	Program(stmt_list) -> let result =  
