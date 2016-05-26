@@ -46,30 +46,34 @@ stmt_list:
 	| stmt stmt_list	{ $1 :: $2 }
 
 stmt: 
-	expr EOL				{ Expr($1) }
+	binop_expr EOL				{ Expr($1) }
 	| LBRACE stmt_list RBRACE 		{ Block(List.rev $2) }
-	| IF expr THEN stmt %prec NOELSE 	{ If($2, $4, Block([])) }
-	| IF expr THEN stmt ELSE stmt 		{ If($2, $4, $6) }
+	| IF binop_expr THEN stmt %prec NOELSE 	{ If($2, $4, Block([])) }
+	| IF binop_expr THEN stmt ELSE stmt 		{ If($2, $4, $6) }
 	| RETURN1 RETURN2 EOL 			{ Return(Noexpr) }
-	| RETURN1 RETURN2 expr EOL		{ Return($3) }
+	| RETURN1 RETURN2 binop_expr EOL		{ Return($3) }
 	/*| fun_def				{ Fun_Def($1) }*/
 
 expr: 
 	literal			{ $1 }
 	| ID			{ Id($1) }
 	| LPAREN expr RPAREN	{ Expr($2) }
-	| expr ADD expr 	{ Binop($1, Add, $3) }
-	| expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
-	| expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
-	| expr DIVIDE expr 	{ Binop($1, Divide, $3) }
 	| ID actuals_opt	{ Call($1, $2) }
 	| ID REASSIGN expr	{ Reassign($1, $3) }
 	| ID ASSIGN expr 	{ Assign($1, $3) }
-	| expr AND expr 	{ Binop($1, And, $3) }
-	| expr OR expr 		{ Binop($1, Or, $3) } 
-	| expr GREATER expr 	{ Binop($1, Greater, $3) }
-	| expr LESSER expr 	{ Binop($1, Lesser, $3) }
 	| NOT expr		{ Uniop(Not,$2) }
+
+binop_expr:
+	| expr				{ $1 } 
+	| binop_expr ADD expr 	{ Binop($1, Add, $3) }
+	| binop_expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
+	| binop_expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
+	| binop_expr DIVIDE expr 	{ Binop($1, Divide, $3) }
+	| binop_expr AND expr 	{ Binop($1, And, $3) }
+	| binop_expr OR expr 		{ Binop($1, Or, $3) } 
+	| binop_expr GREATER expr 	{ Binop($1, Greater, $3) }
+	| binop_expr LESSER expr 	{ Binop($1, Lesser, $3) }
+
 
 actuals_opt:
 	{ [] }

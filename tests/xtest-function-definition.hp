@@ -1,0 +1,4 @@
+adding_spell x, y, z epoximise {
+	result epoximise x adhero y adhero z!
+	finite incantatem result! 
+}
