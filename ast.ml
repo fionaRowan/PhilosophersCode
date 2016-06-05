@@ -1,6 +1,7 @@
 (* AST for Philosopher's Code *)
 type op = Add | Subtract | Multiply | Divide | And | Or | Greater | Lesser
 type uop = Not
+type primitive = Int_Decl
 type expr =
 	| Int_Lit of int
 	| Float_Lit of float
@@ -16,11 +17,23 @@ type expr =
 	| Expr of expr
 	| Noexpr
 
+type formal = 
+	|  Formal of string
+type fun_decl = 
+	{
+		func_name: string;
+		formals: formal list;	
+	} 
+
 type stmt = 
 	| Expr of expr
 	| Block of stmt list
 	| If of expr * stmt * stmt
-	| Return of expr 
+	| Return of expr
+	| Fun_Def_Stmt of fun_def 
+
+and fun_def = 
+	| Fun_Def of fun_decl * stmt  
 
 type program = Program of stmt list 
 
@@ -56,6 +69,7 @@ let rec string_of_expr = function
 			"printf(\"%d\\n\", " ^ String.concat ", " (List.map string_of_expr el) ^")"
 		| _ -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")")
 	| Noexpr -> ""
+	| _ -> "did not match" 
 
 let rec string_of_stmt = function 
 	| Expr(e) -> (string_of_expr e)^";" 
@@ -63,7 +77,19 @@ let rec string_of_stmt = function
 		"if("^(string_of_expr e)^")\n "^(string_of_stmt s1)^" else "^(string_of_stmt s2)
 	| Block(sl) -> "{ "^(String.concat " " (List.map string_of_stmt sl)) ^" }\n"
 	| Return(e) -> "return "^string_of_expr e ^";"
+	| Fun_Def_Stmt(f) -> string_of_fun f
 
+and string_of_formal = function
+	| Formal(f) -> "int "^ f
+
+and string_of_formals_list fl = String.concat ", " (List.map string_of_formal fl) 
+
+and string_of_fun_decl fd = 
+	"int "^fd.func_name^"("^(string_of_formals_list fd.formals)^")\n"
+
+	
+and string_of_fun = function
+	| Fun_Def(f, s) -> (string_of_fun_decl f) ^ (string_of_stmt s)
 let string_of_program stmts = match stmts with 
 	Program(stmt_list) -> let result =  
 		String.concat "" (List.map string_of_stmt stmt_list) ^ "\n" in result

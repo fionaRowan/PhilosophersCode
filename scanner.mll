@@ -25,6 +25,7 @@ rule token = parse
 | '}'		{ RBRACE } 
 | '!' 		{ EOL }
 | ',' 		{ COMMA }
+| "spell" 	{ FUN }
 | "adhero" 	{ ADD }
 | "convello"	{ SUBTRACT }
 | "engorgio" 	{ MULTIPLY }

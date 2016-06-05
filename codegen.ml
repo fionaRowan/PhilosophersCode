@@ -12,27 +12,6 @@ let translate program =
 	let main_str = "int main(){ \n" in
 	let main_end = "\n}\n" in
 
-	(*
-	let rec string_of_expr expression = match expression with
-		| Call(funcName, exprList) -> (match funcName with
-			|"aparecium" -> "printf(\"%d\\n\", "^string_of_actuals exprList^")"
-			| _ -> "printf(\"%s\\n\", \"hello\")")
-		| _ -> "" 
-
-	and string_of_actuals actuals_list = match actuals_list with
-		| [] -> ""
-		| [s] -> string_of_expr s
-		| _ -> "555"
-	in 
-	*)
-
-(*	let rec string_of_expr expression = match expression with 
-		|*)
-	let rec string_of_expr_list expr_list = List.map string_of_expr expr_list in  
-	
-(*	let matcher stmt = match stmt with 
-		| Expr(e) -> string_of_expr e in
-		| Block(sl) -> string_of *)
 	let string_of_stmt_list stmt_list = List.map string_of_stmt stmt_list in  
 
 	let stmts_string_list = string_of_stmt_list (match program with 
