@@ -9,6 +9,7 @@ open Ast
 %token NOT GREATER LESSER EQUALS AND OR TRUE FALSE 
 %token IF THEN ELSE 
 %token RETURN1 RETURN2
+%token FUN
 
 /*data types, literals, id*/
 %token <int> INT_LITERAL
@@ -39,20 +40,23 @@ open Ast
 %%
 
 program:
-	stmt_list EOF		 	{ Program($1) }	
+	stmt_list EOF			{ Program($1) }
 
 stmt_list:	
 	/*nothing*/ 		{ [] }
-	| stmt stmt_list	{ $1 :: $2 }
+	| block stmt_list	{ $1 :: $2 }
 
 stmt: 
 	binop_expr EOL				{ Expr($1) }
-	| LBRACE stmt_list RBRACE 		{ Block(List.rev $2) }
-	| IF binop_expr THEN stmt %prec NOELSE 	{ If($2, $4, Block([])) }
-	| IF binop_expr THEN stmt ELSE stmt 		{ If($2, $4, $6) }
+	| IF binop_expr THEN block %prec NOELSE 	{ If($2, $4, Block([])) }
+	| IF binop_expr THEN block ELSE block 		{ If($2, $4, $6) }
 	| RETURN1 RETURN2 EOL 			{ Return(Noexpr) }
 	| RETURN1 RETURN2 binop_expr EOL		{ Return($3) }
-	/*| fun_def				{ Fun_Def($1) }*/
+	| fun_def				{ Fun_Def_Stmt($1) }
+
+block: 
+	stmt					{ $1 }
+	| LBRACE stmt_list RBRACE		{ Block(List.rev $2) }
 
 expr: 
 	literal			{ $1 }
@@ -65,11 +69,11 @@ expr:
 
 binop_expr:
 	| expr				{ $1 } 
-	| binop_expr ADD expr 	{ Binop($1, Add, $3) }
+	| binop_expr ADD expr 		{ Binop($1, Add, $3) }
 	| binop_expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
 	| binop_expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
 	| binop_expr DIVIDE expr 	{ Binop($1, Divide, $3) }
-	| binop_expr AND expr 	{ Binop($1, And, $3) }
+	| binop_expr AND expr 		{ Binop($1, And, $3) }
 	| binop_expr OR expr 		{ Binop($1, Or, $3) } 
 	| binop_expr GREATER expr 	{ Binop($1, Greater, $3) }
 	| binop_expr LESSER expr 	{ Binop($1, Lesser, $3) }
@@ -90,3 +94,20 @@ literal:
 	| TRUE 			{ Bool_Lit(true) }
 	| FALSE 		{ Bool_Lit(false) }	
 
+fun_decl:
+	| FUN ID formals_opt
+	    { {	func_name = $2;
+		formals = $3 } }
+formals_opt: 
+	{ [] }
+	| formals_list			{ List.rev $1 }
+
+formal: 
+	| ID				{ Formal($1) }
+
+formals_list:
+	formal				{ [$1] }
+	| formals_list COMMA formal 	{ $3 :: $1 }
+
+fun_def: 
+	fun_decl block 			{ Fun_Def($1, $2) }
