@@ -30,7 +30,9 @@ type stmt =
 	| Block of stmt list
 	| If of expr * stmt * stmt
 	| Return of expr
-	| Fun_Def_Stmt of fun_def 
+	| Fun_Def_Stmt of fun_def
+	| DoWhile of stmt * expr
+	| No_Print 
 
 and fun_def = 
 	| Fun_Def of fun_decl * stmt  
@@ -53,6 +55,7 @@ let string_of_uop = function
 	| Not -> "!" 
 
 let rec string_of_expr = function
+(*	| Expr(e) -> "(" ^ string_of_expr e ^ ")"*)
 	| Int_Lit(i) -> string_of_int i
 	| Float_Lit(f) -> string_of_float f
 	| Char_Lit(c) -> string_of_int c
@@ -78,6 +81,8 @@ let rec string_of_stmt = function
 	| Block(sl) -> "{ "^(String.concat " " (List.map string_of_stmt sl)) ^" }\n"
 	| Return(e) -> "return "^string_of_expr e ^";"
 	| Fun_Def_Stmt(f) -> string_of_fun f
+	| DoWhile(b, c) -> "do\n" ^string_of_stmt b ^ "while (" ^ string_of_expr c ^");\n"
+	| No_Print -> "int noPrint;"
 
 and string_of_formal = function
 	| Formal(f) -> "int "^ f

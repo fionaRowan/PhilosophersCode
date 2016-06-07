@@ -10,6 +10,7 @@ open Ast
 %token IF THEN ELSE 
 %token RETURN1 RETURN2
 %token FUN
+%token DO1 DO2 WHILE1 WHILE2
 
 /*data types, literals, id*/
 %token <int> INT_LITERAL
@@ -18,6 +19,7 @@ open Ast
 %token <string> STRING_LITERAL
 %token INT STRING CHAR FLOAT BOOL
 %token <string> ID
+%token NOPRINT 
 
 /*terminators, separators*/ 
 %token EOL 
@@ -53,6 +55,8 @@ stmt:
 	| RETURN1 RETURN2 EOL 			{ Return(Noexpr) }
 	| RETURN1 RETURN2 binop_expr EOL		{ Return($3) }
 	| fun_def				{ Fun_Def_Stmt($1) }
+	| DO1 DO2 block WHILE1 WHILE2 binop_expr EOL	{ DoWhile($3, $6) } 
+	| NOPRINT EOL				{ No_Print }
 
 block: 
 	stmt					{ $1 }

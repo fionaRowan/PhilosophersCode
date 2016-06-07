@@ -45,6 +45,12 @@ rule token = parse
 | "aliter" 	{ ELSE }
 | "finite" 	{ RETURN1 } 
 | "incantatem"	{ RETURN2 }
+| "mimble" 	{ DO1 }
+| "wimble" 	{ DO2 }
+| "prior"	{ WHILE1 }
+| "incantato"	{ WHILE2 }
+(*fun ones*) 	
+| "langlock" 	{ NOPRINT }
 (* Literals and identifiers *)
 | digit+ as int_lit 				{ INT_LITERAL(int_of_string int_lit)}
 | digit+ '.' digit* as float_lit 		{ FLOAT_LITERAL(float_of_string float_lit) }
