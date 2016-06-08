@@ -70,6 +70,7 @@ let rec string_of_expr = function
 	| Call(f, el) -> (match f with 
 		"aparecium" -> 
 			"printf(\"%d\\n\", " ^ String.concat ", " (List.map string_of_expr el) ^")"
+		| "avis" -> "printf(\"%s\\n\", \"bird bird bird bird\")"
 		| _ -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")")
 	| Noexpr -> ""
 	| _ -> "did not match" 

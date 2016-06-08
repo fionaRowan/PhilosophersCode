@@ -49,6 +49,7 @@ rule token = parse
 | "wimble" 	{ DO2 }
 | "prior"	{ WHILE1 }
 | "incantato"	{ WHILE2 }
+(*| "avis"	{ AVIS }*)
 (*fun ones*) 	
 | "langlock" 	{ NOPRINT }
 (* Literals and identifiers *)
