@@ -1,7 +1,7 @@
 (* AST for Philosopher's Code *)
-type op = Add | Subtract | Multiply | Divide | And | Or | Greater | Lesser
-type uop = Not
-type primitive = Int_Decl
+type op = Add | Subtract | Multiply | Divide | And | Or | Greater | Lesser;;
+type uop = Not;;
+type primitive = Int_Decl;;
 type expr =
 	| Int_Lit of int
 	| Float_Lit of float
@@ -15,15 +15,17 @@ type expr =
 	| Assign of string * expr
 	| Reassign of string * expr
 	| Expr of expr
-	| Noexpr
+	| Noexpr;;
 
 type formal = 
-	|  Formal of string
+	|  Formal of string;;
+
+(*function can only take int parameters*)
 type fun_decl = 
 	{
 		func_name: string;
 		formals: formal list;	
-	} 
+	};;
 
 type stmt = 
 	| Expr of expr
@@ -32,12 +34,12 @@ type stmt =
 	| Return of expr
 	| Fun_Def_Stmt of fun_def
 	| DoWhile of stmt * expr
-	| No_Print 
+	| No_Print
 
 and fun_def = 
-	| Fun_Def of fun_decl * stmt  
+	| Fun_Def of fun_decl * stmt;;
 
-type program = Program of stmt list 
+type program = Program of stmt list;;
 
 (*pretty-printing functions*)
 
@@ -49,10 +51,10 @@ let string_of_op = function
 	| And -> "&&"
 	| Or -> "||" 
 	| Greater -> ">"
-	| Lesser -> "<" 
+	| Lesser -> "<";;
 
 let string_of_uop = function
-	| Not -> "!" 
+	| Not -> "!" ;;
 
 let rec string_of_expr = function
 (*	| Expr(e) -> "(" ^ string_of_expr e ^ ")"*)
@@ -73,7 +75,7 @@ let rec string_of_expr = function
 		| "avis" -> "printf(\"%s\\n\", \"bird bird bird bird\")"
 		| _ -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")")
 	| Noexpr -> ""
-	| _ -> "did not match" 
+	| _ -> "did not match";;
 
 let rec string_of_stmt = function 
 	| Expr(e) -> (string_of_expr e)^";" 
@@ -95,7 +97,8 @@ and string_of_fun_decl fd =
 
 	
 and string_of_fun = function
-	| Fun_Def(f, s) -> (string_of_fun_decl f) ^ (string_of_stmt s)
+	| Fun_Def(f, s) -> (string_of_fun_decl f) ^ (string_of_stmt s);;
+
 let string_of_program stmts = match stmts with 
 	Program(stmt_list) -> let result =  
-		String.concat "" (List.map string_of_stmt stmt_list) ^ "\n" in result
+		String.concat "" (List.map string_of_stmt stmt_list) ^ "\n" in result;;
