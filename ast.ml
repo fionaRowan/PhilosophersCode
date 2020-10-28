@@ -12,8 +12,8 @@ type expr =
 	| Call of string * expr list
 	| Binop of expr * op * expr
 	| Uniop of uop * expr
-	| Assign of string * expr
 	| Reassign of string * expr
+	| Assign of string * expr
 	| Expr of expr
 	| Noexpr;;
 
@@ -30,14 +30,20 @@ type fun_decl =
 type stmt = 
 	| Expr of expr
 	| Block of stmt list
-	| If of expr * stmt * stmt
-	| Return of expr
-	| Fun_Def_Stmt of fun_def
-	| DoWhile of stmt * expr
-	| No_Print
+	| SimpleStmt of simple_stmt
+	| CompoundStmt of compound_stmt
 
 and fun_def = 
-	| Fun_Def of fun_decl * stmt;;
+	| Fun_Def of fun_decl * stmt
+
+and simple_stmt = 
+	| Return of expr
+	| No_Print
+
+and compound_stmt = 
+	| Fun_Def_Stmt of fun_def 
+	| If of expr * stmt * stmt 
+	| DoWhile of stmt * expr;;
 
 type program = Program of stmt list;;
 
@@ -66,9 +72,9 @@ let rec string_of_expr = function
 	| Bool_Lit(false) -> "0" 
 	| Binop(a, o, b) -> (string_of_expr a)^(string_of_op o)^(string_of_expr b)
 	| Uniop(uo, a) -> (string_of_uop uo) ^ (string_of_expr a)
-	| Id(s) -> s
 	| Assign(v, e) -> "int "^v^ " = " ^ string_of_expr e
 	| Reassign(v, e) -> v^" = " ^string_of_expr e
+	| Id(s) -> s
 	| Call(f, el) -> (match f with 
 		"aparecium" -> 
 			"printf(\"%d\\n\", " ^ String.concat ", " (List.map string_of_expr el) ^")"
@@ -79,13 +85,19 @@ let rec string_of_expr = function
 
 let rec string_of_stmt = function 
 	| Expr(e) -> (string_of_expr e)^";" 
-	| If(e, s1, s2) -> 
-		"if("^(string_of_expr e)^")\n "^(string_of_stmt s1)^" else "^(string_of_stmt s2)
+	| SimpleStmt(s) ->  (string_of_simple_stmt s)
+	| CompoundStmt(s) -> (string_of_compound_stmt s)
 	| Block(sl) -> "{ "^(String.concat " " (List.map string_of_stmt sl)) ^" }\n"
+
+and string_of_simple_stmt = function
 	| Return(e) -> "return "^string_of_expr e ^";"
+	| No_Print -> "int noPrint;"
+
+and string_of_compound_stmt = function
+	| If(e, s1, s2) -> 
+		"if("^(string_of_expr e)^")\n "^(string_of_stmt s1)^" else "^(string_of_stmt s2)	
 	| Fun_Def_Stmt(f) -> string_of_fun f
 	| DoWhile(b, c) -> "do\n" ^string_of_stmt b ^ "while (" ^ string_of_expr c ^");\n"
-	| No_Print -> "int noPrint;"
 
 and string_of_formal = function
 	| Formal(f) -> "int "^ f

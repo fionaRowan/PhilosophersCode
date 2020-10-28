@@ -49,14 +49,20 @@ stmt_list:
 	| block stmt_list	{ $1 :: $2 }
 
 stmt: 
-	binop_expr EOL				{ Expr($1) }
-	| IF binop_expr THEN block %prec NOELSE 	{ If($2, $4, Block([])) }
-	| IF binop_expr THEN block ELSE block 		{ If($2, $4, $6) }
-	| RETURN1 RETURN2 EOL 			{ Return(Noexpr) }
-	| RETURN1 RETURN2 binop_expr EOL		{ Return($3) }
-	| fun_def				{ Fun_Def_Stmt($1) }
-	| DO1 DO2 block WHILE1 WHILE2 binop_expr EOL	{ DoWhile($3, $6) } 
-	| NOPRINT EOL				{ No_Print }
+	binop_expr EOL				{ Expr($1) 		}
+	| simple_stmt				{ SimpleStmt($1) 	}
+	| compound_stmt				{ CompoundStmt($1) 	}
+
+simple_stmt: 
+	RETURN1 RETURN2 EOL 			{ Return(Noexpr) 	}
+	| RETURN1 RETURN2 binop_expr EOL	{ Return($3) 		}
+	| NOPRINT EOL				{ No_Print 		}
+
+compound_stmt: 
+	IF binop_expr THEN block %prec NOELSE 		{ If($2, $4, Block([])) }
+	| IF binop_expr THEN block ELSE block 		{ If($2, $4, $6) 	}
+	| fun_def					{ Fun_Def_Stmt($1) 	}
+	| DO1 DO2 block WHILE1 WHILE2 binop_expr EOL	{ DoWhile($3, $6) 	} 
 
 block: 
 	stmt					{ $1 }
