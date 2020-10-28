@@ -63,7 +63,7 @@ simple_stmt:
 compound_stmt: 
 	IF expr THEN block %prec NOELSE 		{ If($2, $4, Block([])) }
 	| IF expr THEN block ELSE block 		{ If($2, $4, $6) 	}
-	| fun_def					{ Fun_Def_Stmt($1) 	}
+/* TODO where should this go...,	| fun_def					{ Fun_Def_Stmt($1) 	}*/
 	| DO1 DO2 block WHILE1 WHILE2 expr EOL		{ DoWhile($3, $6) 	} 
 
 block: 

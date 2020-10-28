@@ -33,9 +33,6 @@ type stmt =
 	| SimpleStmt of simple_stmt
 	| CompoundStmt of compound_stmt
 
-and fun_def = 
-	| Fun_Def of fun_decl * stmt
-
 and simple_stmt = 
 	| Reassign of string * expr
 	| Assign of string * expr
@@ -43,11 +40,16 @@ and simple_stmt =
 	| No_Print
 
 and compound_stmt = 
-	| Fun_Def_Stmt of fun_def 
 	| If of expr * stmt * stmt 
 	| DoWhile of stmt * expr;;
 
-type program = Program of stmt list;;
+(* function definitions must be defined separately from statements because they must be generated outside the "main" method *)
+type fun_def_stmt = 	
+	| Fun_Def_Stmt of fun_def 
+and fun_def = 
+	| Fun_Def of fun_decl * stmt;;
+
+type program = Program of stmt list;; (* * func_def_stmt list;;*)
 
 (*pretty-printing functions*)
 
@@ -101,20 +103,23 @@ and string_of_simple_stmt = function
 and string_of_compound_stmt = function
 	| If(e, s1, s2) -> 
 		"if("^(string_of_expr e)^")\n "^(string_of_stmt s1)^" else "^(string_of_stmt s2)	
-	| Fun_Def_Stmt(f) -> string_of_fun f
 	| DoWhile(b, c) -> "do\n" ^string_of_stmt b ^ "while (" ^ string_of_expr c ^");\n"
 
-and string_of_formal = function
-	| Formal(f) -> "int "^ f
 
-and string_of_formals_list fl = String.concat ", " (List.map string_of_formal fl) 
+let rec string_of_fun_def_stmt = function
+	| Fun_Def_Stmt(f) -> string_of_fun f
+
+and string_of_fun = function	
+	| Fun_Def(f, s) -> (string_of_fun_decl f) ^ (string_of_stmt s)
 
 and string_of_fun_decl fd = 
 	"int "^fd.func_name^"("^(string_of_formals_list fd.formals)^")\n"
 
-	
-and string_of_fun = function
-	| Fun_Def(f, s) -> (string_of_fun_decl f) ^ (string_of_stmt s);;
+and string_of_formals_list fl = String.concat ", " (List.map string_of_formal fl)
+
+and string_of_formal = function
+	| Formal(f) -> "int "^ f;;
+
 
 let string_of_program stmts = match stmts with 
 	Program(stmt_list) -> let result =  
