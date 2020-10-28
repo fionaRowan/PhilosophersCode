@@ -49,20 +49,20 @@ stmt_list:
 	| block stmt_list	{ $1 :: $2 }
 
 stmt: 
-	binop_expr EOL				{ Expr($1) 		}
+	expr EOL				{ Expr($1) 		}
 	| simple_stmt				{ SimpleStmt($1) 	}
 	| compound_stmt				{ CompoundStmt($1) 	}
 
 simple_stmt: 
 	RETURN1 RETURN2 EOL 			{ Return(Noexpr) 	}
-	| RETURN1 RETURN2 binop_expr EOL	{ Return($3) 		}
+	| RETURN1 RETURN2 expr EOL	{ Return($3) 		}
 	| NOPRINT EOL				{ No_Print 		}
 
 compound_stmt: 
-	IF binop_expr THEN block %prec NOELSE 		{ If($2, $4, Block([])) }
-	| IF binop_expr THEN block ELSE block 		{ If($2, $4, $6) 	}
+	IF expr THEN block %prec NOELSE 		{ If($2, $4, Block([])) }
+	| IF expr THEN block ELSE block 		{ If($2, $4, $6) 	}
 	| fun_def					{ Fun_Def_Stmt($1) 	}
-	| DO1 DO2 block WHILE1 WHILE2 binop_expr EOL	{ DoWhile($3, $6) 	} 
+	| DO1 DO2 block WHILE1 WHILE2 expr EOL	{ DoWhile($3, $6) 	} 
 
 block: 
 	stmt					{ $1 }
@@ -70,6 +70,7 @@ block:
 
 expr: 
 	literal			{ $1 }
+	| binop_expr		{ $1 }
 	| ID			{ Id($1) }
 	| LPAREN expr RPAREN	{ Expr($2) }
 	| ID actuals_opt	{ Call($1, $2) }
@@ -78,16 +79,14 @@ expr:
 	| NOT expr		{ Uniop(Not,$2) }
 
 binop_expr:
-	| expr				{ $1 } 
-	| binop_expr ADD expr 		{ Binop($1, Add, $3) }
-	| binop_expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
-	| binop_expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
-	| binop_expr DIVIDE expr 	{ Binop($1, Divide, $3) }
-	| binop_expr AND expr 		{ Binop($1, And, $3) }
-	| binop_expr OR expr 		{ Binop($1, Or, $3) } 
-	| binop_expr GREATER expr 	{ Binop($1, Greater, $3) }
-	| binop_expr LESSER expr 	{ Binop($1, Lesser, $3) }
-
+	| expr ADD expr 	{ Binop($1, Add, $3) }
+	| expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
+	| expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
+	| expr DIVIDE expr 	{ Binop($1, Divide, $3) }
+	| expr AND expr 	{ Binop($1, And, $3) }
+	| expr OR expr 		{ Binop($1, Or, $3) } 
+	| expr GREATER expr 	{ Binop($1, Greater, $3) }
+	| expr LESSER expr 	{ Binop($1, Lesser, $3) }
 
 actuals_opt:
 	{ [] }
