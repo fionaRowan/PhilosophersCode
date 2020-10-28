@@ -8,8 +8,6 @@ type expr =
 	| Call of string * expr list
 	| Binop of expr * op * expr
 	| Uniop of uop * expr
-	| Reassign of string * expr
-	| Assign of string * expr
 	| Expr of expr
 	| Noexpr
 
@@ -39,6 +37,8 @@ and fun_def =
 	| Fun_Def of fun_decl * stmt
 
 and simple_stmt = 
+	| Reassign of string * expr
+	| Assign of string * expr
 	| Return of expr
 	| No_Print
 
@@ -69,8 +69,6 @@ let rec string_of_expr = function
 	| Literal(e) -> (string_of_literal e)
 	| Binop(a, o, b) -> (string_of_expr a)^(string_of_op o)^(string_of_expr b)
 	| Uniop(uo, a) -> (string_of_uop uo) ^ (string_of_expr a)
-	| Assign(v, e) -> "int "^v^ " = " ^ string_of_expr e
-	| Reassign(v, e) -> v^" = " ^string_of_expr e
 	| Id(s) -> s
 	| Call(f, el) -> (match f with 
 		"aparecium" -> 
@@ -95,6 +93,8 @@ let rec string_of_stmt = function
 	| Block(sl) -> "{ "^(String.concat " " (List.map string_of_stmt sl)) ^" }\n"
 
 and string_of_simple_stmt = function
+	| Assign(v, e) -> "int "^v^ " = " ^ string_of_expr e ^ ";"
+	| Reassign(v, e) -> v^" = " ^string_of_expr e ^ ";"
 	| Return(e) -> "return "^string_of_expr e ^";"
 	| No_Print -> "int noPrint;"
 

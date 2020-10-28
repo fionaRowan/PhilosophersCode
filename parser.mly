@@ -54,43 +54,43 @@ stmt:
 	| compound_stmt				{ CompoundStmt($1) 	}
 
 simple_stmt: 
-	| RETURN1 RETURN2 EOL 			{ Return(Noexpr) 	}
+	| RETURN1 RETURN2 EOL 		{ Return(Noexpr) 	}
 	| RETURN1 RETURN2 expr EOL	{ Return($3) 		}
-	| NOPRINT EOL				{ No_Print 		}
+	| NOPRINT EOL			{ No_Print 		}
+	| ID REASSIGN expr EOL		{ Reassign($1, $3) 	}
+	| ID ASSIGN expr EOL		{ Assign($1, $3) 	}
 
 compound_stmt: 
 	IF expr THEN block %prec NOELSE 		{ If($2, $4, Block([])) }
 	| IF expr THEN block ELSE block 		{ If($2, $4, $6) 	}
 	| fun_def					{ Fun_Def_Stmt($1) 	}
-	| DO1 DO2 block WHILE1 WHILE2 expr EOL	{ DoWhile($3, $6) 	} 
+	| DO1 DO2 block WHILE1 WHILE2 expr EOL		{ DoWhile($3, $6) 	} 
 
 block: 
-	stmt					{ $1 }
-	| LBRACE stmt_list RBRACE		{ Block(List.rev $2) }
+	stmt					{ $1 			}	
+	| LBRACE stmt_list RBRACE		{ Block(List.rev $2) 	}
 
 expr: 
-	literal			{ Literal($1) }
-	| binop_expr		{ $1 }
-	| ID REASSIGN expr	{ Reassign($1, $3) }
-	| ID ASSIGN expr 	{ Assign($1, $3) }
-	| ID			{ Id($1) }
-	| LPAREN expr RPAREN	{ Expr($2) }
-	| ID actuals_opt	{ Call($1, $2) }
+	literal			{ Literal($1) 	}
+	| binop_expr		{ $1 		}
+	| ID			{ Id($1) 	}
+	| LPAREN expr RPAREN	{ Expr($2) 	}
+	| ID actuals_opt	{ Call($1, $2) 	}
 	| NOT expr		{ Uniop(Not,$2) }
 
 binop_expr:
-	| expr ADD expr 	{ Binop($1, Add, $3) }
-	| expr SUBTRACT expr	{ Binop($1, Subtract, $3) }
-	| expr MULTIPLY expr 	{ Binop($1, Multiply, $3) }
-	| expr DIVIDE expr 	{ Binop($1, Divide, $3) }
-	| expr AND expr 	{ Binop($1, And, $3) }
-	| expr OR expr 		{ Binop($1, Or, $3) } 
-	| expr GREATER expr 	{ Binop($1, Greater, $3) }
-	| expr LESSER expr 	{ Binop($1, Lesser, $3) }
+	| expr ADD expr 	{ Binop($1, Add, $3) 		}
+	| expr SUBTRACT expr	{ Binop($1, Subtract, $3) 	}
+	| expr MULTIPLY expr 	{ Binop($1, Multiply, $3) 	}
+	| expr DIVIDE expr 	{ Binop($1, Divide, $3) 	}
+	| expr AND expr 	{ Binop($1, And, $3) 		}
+	| expr OR expr 		{ Binop($1, Or, $3) 		} 
+	| expr GREATER expr 	{ Binop($1, Greater, $3) 	}
+	| expr LESSER expr 	{ Binop($1, Lesser, $3) 	}
 
 actuals_opt:
 	{ [] }
-	| actuals_list		{ List.rev $1 }
+	| actuals_list		{ List.rev $1 			}
 	
 actuals_list:
 	expr 			{ [$1] }
