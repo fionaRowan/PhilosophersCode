@@ -3,11 +3,7 @@ type op = Add | Subtract | Multiply | Divide | And | Or | Greater | Lesser;;
 type uop = Not;;
 type primitive = Int_Decl;;
 type expr =
-	| Int_Lit of int
-	| Float_Lit of float
-	| Char_Lit of int 
-	| String_Lit of string
-	| Bool_Lit of bool
+	| Literal of literal
 	| Id of string
 	| Call of string * expr list
 	| Binop of expr * op * expr
@@ -15,12 +11,18 @@ type expr =
 	| Reassign of string * expr
 	| Assign of string * expr
 	| Expr of expr
-	| Noexpr;;
+	| Noexpr
+
+and literal = 
+	| Int_Lit of int
+	| Float_Lit of float
+	| Char_Lit of int 
+	| String_Lit of string
+	| Bool_Lit of bool;;
 
 type formal = 
 	|  Formal of string;;
 
-(*function can only take int parameters*)
 type fun_decl = 
 	{
 		func_name: string;
@@ -63,13 +65,8 @@ let string_of_uop = function
 	| Not -> "!" ;;
 
 let rec string_of_expr = function
-(*	| Expr(e) -> "(" ^ string_of_expr e ^ ")"*)
-	| Int_Lit(i) -> string_of_int i
-	| Float_Lit(f) -> string_of_float f
-	| Char_Lit(c) -> string_of_int c
-	| String_Lit(s) -> s
-	| Bool_Lit(true) -> "1"
-	| Bool_Lit(false) -> "0" 
+	(*| Expr(e) -> "(" ^ string_of_expr e ^ ")"*)
+	| Literal(e) -> (string_of_literal e)
 	| Binop(a, o, b) -> (string_of_expr a)^(string_of_op o)^(string_of_expr b)
 	| Uniop(uo, a) -> (string_of_uop uo) ^ (string_of_expr a)
 	| Assign(v, e) -> "int "^v^ " = " ^ string_of_expr e
@@ -81,7 +78,15 @@ let rec string_of_expr = function
 		| "avis" -> "printf(\"%s\\n\", \"bird bird bird bird\")"
 		| _ -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")")
 	| Noexpr -> ""
-	| _ -> "did not match";;
+	| _ -> "did not match"
+
+and string_of_literal = function
+	| Int_Lit(i) -> string_of_int i
+	| Float_Lit(f) -> string_of_float f
+	| Char_Lit(c) -> string_of_int c
+	| String_Lit(s) -> s
+	| Bool_Lit(true) -> "1"
+	| Bool_Lit(false) -> "0" ;;
 
 let rec string_of_stmt = function 
 	| Expr(e) -> (string_of_expr e)^";" 

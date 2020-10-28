@@ -54,7 +54,7 @@ stmt:
 	| compound_stmt				{ CompoundStmt($1) 	}
 
 simple_stmt: 
-	RETURN1 RETURN2 EOL 			{ Return(Noexpr) 	}
+	| RETURN1 RETURN2 EOL 			{ Return(Noexpr) 	}
 	| RETURN1 RETURN2 expr EOL	{ Return($3) 		}
 	| NOPRINT EOL				{ No_Print 		}
 
@@ -69,13 +69,13 @@ block:
 	| LBRACE stmt_list RBRACE		{ Block(List.rev $2) }
 
 expr: 
-	literal			{ $1 }
+	literal			{ Literal($1) }
 	| binop_expr		{ $1 }
+	| ID REASSIGN expr	{ Reassign($1, $3) }
+	| ID ASSIGN expr 	{ Assign($1, $3) }
 	| ID			{ Id($1) }
 	| LPAREN expr RPAREN	{ Expr($2) }
 	| ID actuals_opt	{ Call($1, $2) }
-	| ID REASSIGN expr	{ Reassign($1, $3) }
-	| ID ASSIGN expr 	{ Assign($1, $3) }
 	| NOT expr		{ Uniop(Not,$2) }
 
 binop_expr:
