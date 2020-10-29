@@ -17,6 +17,6 @@ let _ =
 		let lexbuf=Lexing.from_channel stdin in
 		let ast = Parser.program Scanner.token lexbuf in
 		match action with 
-		Ast -> print_string (Ast.string_of_program ast) 
+		Ast -> let pair =  Ast.string_of_program ast in let (funs, stmts) = pair in (print_string funs;  print_string stmts)
 		| Compile -> let result = Codegen.translate ast
 			in print_string result

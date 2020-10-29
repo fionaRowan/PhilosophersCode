@@ -49,7 +49,7 @@ type fun_def_stmt =
 and fun_def = 
 	| Fun_Def of fun_decl * stmt;;
 
-type program = Program of stmt list;; (* * func_def_stmt list;;*)
+type program = Program of fun_def_stmt list * stmt list;;
 
 (*pretty-printing functions*)
 
@@ -120,7 +120,14 @@ and string_of_formals_list fl = String.concat ", " (List.map string_of_formal fl
 and string_of_formal = function
 	| Formal(f) -> "int "^ f;;
 
-
-let string_of_program stmts = match stmts with 
-	Program(stmt_list) -> let result =  
-		String.concat "" (List.map string_of_stmt stmt_list) ^ "\n" in result;;
+let rec string_of_program = function
+	| Program(fun_def_stmt_list, stmt_list) -> let result = 
+		(String.concat "" (List.map string_of_fun_def_stmt fun_def_stmt_list) ^ "\n",
+		String.concat "" (List.map string_of_stmt stmt_list) ^ "\n")
+	in result;;
+(*		
+let string_of_program ((fun_def_stmt_list: fun_def_stmt list), (stmt_list: stmt list)) = match Program(fun_def_stmt_list, stmt_list) with
+	| Program(fun_def_stmt_list, stmt_list) -> let result =  
+		(String.concat "" (List.map string_of_fun_def_stmt fun_def_stmt_list) ^ "\n",
+		String.concat "" (List.map string_of_stmt stmt_list) ^ "\n")
+	in result;;*)

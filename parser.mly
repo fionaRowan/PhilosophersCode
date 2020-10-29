@@ -42,7 +42,14 @@ open Ast
 %%
 
 program:
-	stmt_list EOF			{ Program($1) }
+	| fun_def_stmt_list stmt_list EOF	{ Program($1, $2) 		}
+
+fun_def_stmt_list:
+	/*nothing*/				{ [] 			}
+	| fun_def_stmt fun_def_stmt_list	{ $1 :: $2 		}
+
+fun_def_stmt:
+	| fun_def				{ Fun_Def_Stmt($1) 	}
 
 stmt_list:	
 	/*nothing*/ 		{ [] }
@@ -63,11 +70,10 @@ simple_stmt:
 compound_stmt: 
 	IF expr THEN block %prec NOELSE 		{ If($2, $4, Block([])) }
 	| IF expr THEN block ELSE block 		{ If($2, $4, $6) 	}
-/* TODO where should this go...,	| fun_def					{ Fun_Def_Stmt($1) 	}*/
 	| DO1 DO2 block WHILE1 WHILE2 expr EOL		{ DoWhile($3, $6) 	} 
 
 block: 
-	stmt					{ $1 			}	
+	stmt					{ $1 			}
 	| LBRACE stmt_list RBRACE		{ Block(List.rev $2) 	}
 
 expr: 
